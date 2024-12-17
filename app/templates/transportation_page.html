@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <main class="container">
+        <h3  class="text-center">Черновая перевозка</h3>
+         <div class="form-group">
+            <label class="form-label">Транспортное средство</label>
+            {% if transportation.vehicle %}
+                <input placeholder="Введите название" disabled type="text" class="form-control" style="width: 250px" value="{{ transportation.vehicle }}">
+            {% else %}
+                <input placeholder="Введите название" disabled type="text" class="form-control" style="width: 250px">
+            {% endif %}
+        </div>
+        {% if transportation.get_containers|length > 0 %}
+            <h4 class="text-center">Контейнеры</h4>
+            <div class="cards-wrapper d-flex flex-column">
+                {% for container in transportation.get_containers %}
+                    <div class="card w-100 mb5">
+                         <div class="row g-0">
+                            <div class="col-md-6 d-flex justify-center">
+                                <img src="{{ container.get_image }}">
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ container.name }}</h5>
+                                    <p class="card-text">Вес: {{ container.weight }} т</p>
+                                    <div class="form-group">
+                                        <label class="form-label">Количество</label>
+                                        <input disabled type="text" class="form-control" style="width: 250px" value="{{ container.count }}">
+                                    </div>
+                                    <a href="/containers/{{ container.id }}/" class="btn btn-primary" style="width: 100px">
+                                        Открыть
+                                    </a>
+                                </div>
+                            </div>
+                         </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+             <h4 class="text-center">Контейнеры еще не добавлены</h4>
+        {% endif %}
+        <form method="post" action="{% url 'delete_transportation' transportation.id %}" class="d-flex justify-content-center">
+            {% csrf_token %}
+                <button class="btn btn-danger delete-draft-transportation-btn" type="submit" style="width: 125px">
+                    Удалить
+                </button>
+            </a>
+        </form>
+    </main>
+{% endblock content %}
